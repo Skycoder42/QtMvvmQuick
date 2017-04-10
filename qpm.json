@@ -1,0 +1,24 @@
+{
+  "name": "de.skycoder42.qtmvvm.quick",
+  "description": "The quick controls 2 frontend of QtMvvm",
+  "author": {
+    "name": "Skycoder",
+    "email": "skycoder42.de@gmx.de"
+  },
+  "repository": {
+    "type": "GITHUB",
+    "url": "https://github.com/Skycoder42/QtMvvmQuick.git"
+  },
+  "version": {
+    "label": "1.0.0",
+    "revision": "",
+    "fingerprint": ""
+  },
+  "dependencies": [
+    "de.skycoder42.qpm-include@1.0.0",
+    "de.skycoder42.quickextras@1.0.0"
+  ],
+  "license": "BSD_3_CLAUSE",
+  "pri_filename": "de_skycoder42_qtmvvm_quick.pri",
+  "webpage": "https://github.com/Skycoder42/QtMvvm"
+}
