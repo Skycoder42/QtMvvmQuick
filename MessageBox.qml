@@ -10,6 +10,7 @@ AlertDialog {
 	visible: false
 
 	property MessageResult messageResult: null
+	property bool isOpen: false
 
 	function showMessageBox(result, type, title, text, positiveText, negativeText, neutralText, inputUrl, editProperties) {
 		if(visible)
@@ -30,7 +31,19 @@ AlertDialog {
 		messageBox.open();
 	}
 
-	onClosed: messageResult = null
+	function closeAction() {
+		if(isOpen) {
+			close();
+			return false;
+		} else
+			return true;
+	}
+
+	onOpened: isOpen = true
+	onClosed: {
+		messageResult = null
+		isOpen = false
+	}
 
 	header: RowLayout {
 		spacing: 14

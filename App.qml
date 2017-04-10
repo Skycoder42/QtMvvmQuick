@@ -5,14 +5,22 @@ import QtQuick.Controls.Material 2.1
 AppBase {
 	id: root
 
+	property var popups: []
+
 	function presentItem(item) {
 		return mainStack.presentItem(item);
 	}
 
 	function presentPopup(popup) {
 		popup.parent = root.contentItem;
-		popup.closed.connect(popup.destroy);
+		popup.closed.connect(function() {
+			var index = popups.indexOf(popup);
+			if(index > -1)
+				popups.splice(index, 1);
+			popup.destroy();
+		});
 		popup.open();
+		popups.push(popup);
 		return true;
 	}
 
@@ -37,5 +45,19 @@ AppBase {
 		id:messageBox
 	}
 
-	onClosing: close.accepted = mainStack.closeAction();
+	onClosing: {
+		var notClosed = messageBox.closeAction();
+
+		if(notClosed) {
+			if(popups.length > 0) {
+				popups[popups.length - 1].close();
+				notClosed = false;
+			}
+		}
+
+		if(notClosed)
+			notClosed = mainStack.closeAction();
+
+		close.accepted = notClosed;
+	}
 }
