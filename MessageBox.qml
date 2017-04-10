@@ -2,8 +2,8 @@ import QtQuick 2.8
 import QtQuick.Controls 2.1
 import QtQuick.Controls.Material 2.1
 import QtQuick.Layouts 1.3
-import de.skycoder42.qtmvvm 1.0
 import de.skycoder42.quickextras 1.0
+import de.skycoder42.qtmvvm.quick 1.0
 
 AlertDialog {
 	id: messageBox
@@ -48,7 +48,7 @@ AlertDialog {
 			Layout.rightMargin: 0
 
 			function messageIcon() {
-				var base = "image://svg/de/skycoder42/qtmvvm/icons/ic_%1";
+				var base = "image://svg/de/skycoder42/qtmvvm/quick/icons/ic_%1";
 				switch(iconType) {
 				case QuickPresenter.Input:
 					return "";

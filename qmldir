@@ -1,2 +1,8 @@
-
 module de.skycoder42.qtmvvm.quick
+
+# qml files
+App 1.0 App.qml
+AppBase 1.0 AppBase.qml
+PresentingStackView 1.0 PresentingStackView.qml
+PresenterProgress 1.0 PresenterProgress.qml
+MessageBox 1.0 MessageBox.qml

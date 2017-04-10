@@ -45,7 +45,6 @@ private:
 	QHash<QByteArray, QUrl> _explicitMappings;
 
 	void setQmlSingleton(QuickPresenterQmlSingleton *singleton);
-	static void doRegister(QuickPresenter *presenter);
 	static QQmlApplicationEngine *createEngine(const QUrl &file);
 };
 
@@ -106,7 +105,7 @@ private:
 template<typename TPresenter>
 void QuickPresenter::registerAsPresenter()
 {
-	doRegister(new TPresenter());
+	CoreApp::setMainPresenter(new TPresenter());
 }
 
 template<typename TControl>

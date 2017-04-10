@@ -1,6 +1,6 @@
 import QtQuick 2.8
 import QtQuick.Controls 2.1
-import de.skycoder42.qtmvvm 1.0
+import de.skycoder42.qtmvvm.quick 1.0
 
 ApplicationWindow {
 	id: root

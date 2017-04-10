@@ -1,5 +1,4 @@
 #include "quickpresenter.h"
-#include "settingsuibuilder.h"
 
 #include <QDebug>
 #include <QDir>
@@ -9,6 +8,8 @@
 #include <settingscontrol.h>
 
 static QObject *createQuickPresenterQmlSingleton(QQmlEngine *qmlEngine, QJSEngine *jsEngine);
+static void registerQml();
+Q_COREAPP_STARTUP_FUNCTION(registerQml)
 
 QuickPresenter::QuickPresenter() :
 	_singleton(nullptr),
@@ -21,7 +22,7 @@ QQmlApplicationEngine *QuickPresenter::createAppEngine(const QUrl &initialFile)
 	auto presenter = static_cast<QuickPresenter*>(CoreApp::instance()->presenter());
 	if(!presenter) {
 		presenter = new QuickPresenter();
-		doRegister(presenter);
+		CoreApp::setMainPresenter(presenter);
 	}
 	return createEngine(initialFile);
 }
@@ -31,7 +32,7 @@ void QuickPresenter::registerViewExplicitly(const char *controlName, const QUrl 
 	auto presenter = static_cast<QuickPresenter*>(CoreApp::instance()->presenter());
 	if(!presenter) {
 		presenter = new QuickPresenter();
-		doRegister(presenter);
+		CoreApp::setMainPresenter(presenter);
 	}
 	presenter->_explicitMappings.insert(controlName, viewUrl);
 }
@@ -41,7 +42,7 @@ void QuickPresenter::registerInputViewFactory(InputViewFactory *factory)
 	auto presenter = static_cast<QuickPresenter*>(CoreApp::instance()->presenter());
 	if(!presenter) {
 		presenter = new QuickPresenter();
-		doRegister(presenter);
+		CoreApp::setMainPresenter(presenter);
 	}
 	presenter->_inputFactory.reset(factory);
 }
@@ -165,21 +166,6 @@ void QuickPresenter::setQmlSingleton(QuickPresenterQmlSingleton *singleton)
 {
 	Q_ASSERT_X(!_singleton, Q_FUNC_INFO, "rigth now, only a single qml engine is supported!");
 	_singleton = singleton;
-}
-
-void QuickPresenter::doRegister(QuickPresenter *presenter)
-{
-	CoreApp::setMainPresenter(presenter);
-	qmlRegisterSingletonType<QuickPresenterQmlSingleton>("de.skycoder42.qtmvvm", 1, 0, "QuickPresenter", createQuickPresenterQmlSingleton);
-	qmlRegisterUncreatableType<MessageResult>("de.skycoder42.qtmvvm", 1, 0, "MessageResult", "This type can only be passed to QML from the presenter!");
-	qmlRegisterUncreatableType<SettingsControl>("de.skycoder42.qtmvvm", 1, 0, "SettingsControl", "Controls cannot be created!");
-	qmlRegisterType<SettingsUiBuilder>("de.skycoder42.qtmvvm", 1, 0, "SettingsUiBuilder");
-	qmlRegisterType(QStringLiteral("qrc:/qtmvvm/qml/PresentingStackView.qml"), "de.skycoder42.qtmvvm", 1, 0, "PresentingStackView");
-	qmlRegisterType(QStringLiteral("qrc:/qtmvvm/qml/PresenterProgress.qml"), "de.skycoder42.qtmvvm", 1, 0, "PresenterProgress");
-	qmlRegisterType(QStringLiteral("qrc:/qtmvvm/qml/AppBase.qml"), "de.skycoder42.qtmvvm", 1, 0, "AppBase");
-	qmlRegisterType(QStringLiteral("qrc:/qtmvvm/qml/MessageBox.qml"), "de.skycoder42.qtmvvm", 1, 0, "MessageBox");
-	qmlRegisterType(QStringLiteral("qrc:/qtmvvm/qml/App.qml"), "de.skycoder42.qtmvvm", 1, 0, "App");
-	qmlProtectModule("de.skycoder42.qtmvvm", 1);
 }
 
 QQmlApplicationEngine *QuickPresenter::createEngine(const QUrl &file)
@@ -391,4 +377,11 @@ static QObject *createQuickPresenterQmlSingleton(QQmlEngine *qmlEngine, QJSEngin
 {
 	Q_UNUSED(jsEngine)
 	return new QuickPresenterQmlSingleton(qmlEngine);
+}
+
+static void registerQml()
+{
+	qmlRegisterSingletonType<QuickPresenterQmlSingleton>("de.skycoder42.qtmvvm.quick", 1, 0, "QuickPresenter", createQuickPresenterQmlSingleton);
+	qmlRegisterUncreatableType<MessageResult>("de.skycoder42.qtmvvm.quick", 1, 0, "MessageResult", "This type can only be passed to QML from the presenter!");
+	//qmlProtectModule("de.skycoder42.qtmvvm", 1);
 }
