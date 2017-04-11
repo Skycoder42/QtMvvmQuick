@@ -5,7 +5,6 @@
 #include <QDirIterator>
 #include <QGuiApplication>
 #include <quickextras.h>
-#include <settingscontrol.h>
 
 static QObject *createQuickPresenterQmlSingleton(QQmlEngine *qmlEngine, QJSEngine *jsEngine);
 static void registerQml();
