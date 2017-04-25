@@ -39,10 +39,7 @@ AlertDialog {
 	}
 
 	onOpened: isOpen = true
-	onClosed: {
-		messageResult = null
-		isOpen = false
-	}
+	onClosed: isOpen = false
 
 	header: RowLayout {
 		spacing: 14
@@ -119,13 +116,17 @@ AlertDialog {
 	}
 
 	onAccepted: {
-		if(messageResult)
-			messageResult.complete(MessageResult.PositiveResult, contentLoader.item ? contentLoader.item.inputValue : undefined)
+		if(messageResult) {
+			messageResult.complete(MessageResult.PositiveResult, contentLoader.item ? contentLoader.item.inputValue : undefined);
+			messageResult = null;
+		}
 	}
 
 	onRejected:  {
-		if(messageResult)
-			messageResult.complete(MessageResult.NegativeResult, undefined)
+		if(messageResult) {
+			messageResult.complete(MessageResult.NegativeResult, undefined);
+			messageResult = null;
+		}
 	}
 
 	footer: DialogButtonBox {
@@ -155,8 +156,10 @@ AlertDialog {
 		}
 
 		onClicked: {
-			if(messageResult && button === standardButton(DialogButtonBox.Discard))
-				messageResult.complete(MessageResult.NeutralResult, undefined)
+			if(messageResult && button === standardButton(DialogButtonBox.Discard)) {
+				messageResult.complete(MessageResult.NeutralResult, undefined);
+				messageResult = null;
+			}
 		}
 	}
 }
