@@ -1,4 +1,5 @@
 #include "quickpresenter.h"
+#include "qmlcoremessage.h"
 
 #include <QDebug>
 #include <QDir>
@@ -7,6 +8,7 @@
 #include <quickextras.h>
 
 static QObject *createQuickPresenterQmlSingleton(QQmlEngine *qmlEngine, QJSEngine *jsEngine);
+static QObject *createCoreMessageQmlSingleton(QQmlEngine *qmlEngine, QJSEngine *jsEngine);
 static void registerQml();
 Q_COREAPP_STARTUP_FUNCTION(registerQml)
 
@@ -378,9 +380,15 @@ static QObject *createQuickPresenterQmlSingleton(QQmlEngine *qmlEngine, QJSEngin
 	return new QuickPresenterQmlSingleton(qmlEngine);
 }
 
+static QObject *createCoreMessageQmlSingleton(QQmlEngine *qmlEngine, QJSEngine *jsEngine)
+{
+	return new QmlCoreMessage(jsEngine, qmlEngine);
+}
+
 static void registerQml()
 {
 	qmlRegisterSingletonType<QuickPresenterQmlSingleton>("de.skycoder42.qtmvvm.quick", 1, 0, "QuickPresenter", createQuickPresenterQmlSingleton);
 	qmlRegisterUncreatableType<MessageResult>("de.skycoder42.qtmvvm.quick", 1, 0, "MessageResult", "This type can only be passed to QML from the presenter!");
+	qmlRegisterSingletonType<QmlCoreMessage>("de.skycoder42.qtmvvm.quick", 1, 0, "CoreMessage", createCoreMessageQmlSingleton);
 	//qmlProtectModule("de.skycoder42.qtmvvm", 1);
 }
