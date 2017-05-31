@@ -33,9 +33,9 @@ AlertDialog {
 	function closeAction() {
 		if(isOpen) {
 			close();
-			return false;
-		} else
 			return true;
+		} else
+			return false;
 	}
 
 	onOpened: isOpen = true

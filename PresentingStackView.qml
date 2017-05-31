@@ -1,5 +1,6 @@
 import QtQuick 2.8
 import QtQuick.Controls 2.1
+import de.skycoder42.qtmvvm.quick 1.0
 
 StackView {
 	id: mainStack
@@ -9,41 +10,40 @@ StackView {
 	readonly property int opDuration: 75
 
 	function presentItem(item) {
-		return push(item) ? true : false;
+		if(push(item)) {
+			QuickPresenter.qmlPresenter.opened(item);
+			return true;
+		} else
+			return false;
 	}
 
 	function withdrawItem(item) {
-		if(currentItem === item)
-			pop();
-		delay(animDuration + 50, item.destroy);
-		return true;
+		if(currentItem === item) {
+			if(pop()) {
+				QuickPresenter.qmlPresenter.closed(item);
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	function closeAction() {
 		if(typeof mainStack.currentItem.closeAction != "undefined") {
-			if(!mainStack.currentItem.closeAction())
+			if(mainStack.currentItem.closeAction())
+				return true;
+		}
+
+		if(mainStack.depth <= 1)
+			return false;
+		else {
+			var item = mainStack.pop();
+			if(item) {
+				QuickPresenter.qmlPresenter.closed(item);
+				return true;
+			} else
 				return false;
 		}
-
-		if(mainStack.depth <= 1) {
-			mainStack.currentItem.destroy();
-			return true;
-		} else {
-			var item = mainStack.pop();
-			delay(animDuration + 50, item.destroy);
-			return false;
-		}
-	}
-
-	function delay(delayMSec, fn) {
-		var timer = Qt.createQmlObject("import QtQuick 2.8; Timer {}", mainStack);
-		timer.interval = delayMSec;
-		timer.repeat = false;
-		timer.triggered.connect(function(){
-			fn();
-			timer.destroy();
-		});
-		timer.start();
 	}
 
 	pushEnter: Transition {

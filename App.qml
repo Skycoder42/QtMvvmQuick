@@ -12,12 +12,16 @@ AppBase {
 
 	function presentPopup(popup) {
 		popup.parent = root.contentItem;
+		popup.opened.connect(function(){
+			opened(popup);
+		});
 		popup.closed.connect(function() {
 			var index = popups.indexOf(popup);
 			if(index > -1)
 				popups.splice(index, 1);
-			popup.destroy();
+			closed(popup);
 		});
+
 		popup.open();
 		popups.push(popup);
 		return true;
@@ -45,18 +49,18 @@ AppBase {
 	}
 
 	onClosing: {
-		var notClosed = messageBox.closeAction();
+		var closed = messageBox.closeAction();
 
-		if(notClosed) {
+		if(!closed) {
 			if(popups.length > 0) {
 				popups[popups.length - 1].close();
-				notClosed = false;
+				closed = true;
 			}
 		}
 
-		if(notClosed)
-			notClosed = mainStack.closeAction();
+		if(!closed)
+			closed = mainStack.closeAction();
 
-		close.accepted = notClosed;
+		close.accepted = !closed;
 	}
 }

@@ -306,6 +306,21 @@ qreal QuickPresenterQmlSingleton::loadingProgress() const
 	return _latestComponent ? _latestComponent->progress() : 0.0;
 }
 
+void QuickPresenterQmlSingleton::setQmlPresenter(QObject *presenter)
+{
+	if(_qmlPresenter) {
+		disconnect(_qmlPresenter, SIGNAL(opened(QVariant)),
+				   this, SLOT(itemOpened(QVariant)));
+		disconnect(_qmlPresenter, SIGNAL(closed(QVariant)),
+				   this, SLOT(itemClosed(QVariant)));
+	}
+	_qmlPresenter = presenter;
+	connect(_qmlPresenter, SIGNAL(opened(QVariant)),
+			this, SLOT(itemOpened(QVariant)));
+	connect(_qmlPresenter, SIGNAL(closed(QVariant)),
+			this, SLOT(itemClosed(QVariant)));
+}
+
 void QuickPresenterQmlSingleton::statusChanged(QQmlComponent::Status status)
 {
 	auto component = qobject_cast<QQmlComponent*>(sender());
@@ -334,6 +349,36 @@ void QuickPresenterQmlSingleton::statusChanged(QQmlComponent::Status status)
 	}
 }
 
+void QuickPresenterQmlSingleton::itemOpened(QVariant item)
+{
+	auto object = item.value<QObject*>();
+	if(object) {
+		qDebug() << "Opened" << object->metaObject()->className();
+		auto control = object->property("control").value<Control*>();
+		if(control) {
+			if(!_activeControls.contains(control)) {//safeguard for double opens
+				_activeControls.insert(control, object);
+				control->onShow();
+			}
+		} else
+			qWarning() << "Opened view without control!";
+	}
+}
+
+void QuickPresenterQmlSingleton::itemClosed(QVariant item)
+{
+	auto object = item.value<QObject*>();
+	if(object) {
+		qDebug() << "Closed" << object->metaObject()->className();
+		auto control = object->property("control").value<Control*>();
+		if(control) {
+			if(_activeControls.remove(control) > 0)//safeguard for double closes
+				control->onClose();
+		} else
+			qWarning() << "Closed view without control!";
+	}
+}
+
 void QuickPresenterQmlSingleton::addObject(QQmlComponent *component, Control *control)
 {
 	if(!_qmlPresenter) {
@@ -357,15 +402,14 @@ void QuickPresenterQmlSingleton::addObject(QQmlComponent *component, Control *co
 	if(!presented)
 		presented = _presenter->tryPresentView(_qmlPresenter, item);
 
-	if(presented) {
-		_activeControls.insert(control, item);
-		connect(item, &QObject::destroyed, this, [=](){
-			_activeControls.remove(control);
-			control->onClose();
-		});
-		control->onShow();
-		QQmlEngine::setObjectOwnership(item, QQmlEngine::JavaScriptOwnership);
-	} else {
+	//TODO DEBUG
+	connect(item, &QObject::destroyed, this, [=](){
+		qDebug() << "Destroyed" << item->metaObject()->className();
+	}, Qt::DirectConnection);
+
+	if(presented)
+		QQmlEngine::setObjectOwnership(item, QQmlEngine::JavaScriptOwnership);//TODO cpp own works!!!
+	else {
 		qCritical() << "Failed to present item for control of type"
 					<< control->metaObject()->className();
 		item->deleteLater();

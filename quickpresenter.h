@@ -52,7 +52,7 @@ class QuickPresenterQmlSingleton : public QObject
 {
 	Q_OBJECT
 
-	Q_PROPERTY(QObject* qmlPresenter MEMBER _qmlPresenter NOTIFY stackViewChanged)
+	Q_PROPERTY(QObject* qmlPresenter READ qmlPresenter WRITE setQmlPresenter NOTIFY stackViewChanged)
 
 	Q_PROPERTY(bool viewLoading READ isViewLoading NOTIFY viewLoadingChanged)
 	Q_PROPERTY(qreal loadingProgress READ loadingProgress NOTIFY loadingProgressChanged)
@@ -78,6 +78,9 @@ public:
 	bool isViewLoading() const;
 	qreal loadingProgress() const;
 
+public slots:
+	void setQmlPresenter(QObject *presenter);
+
 signals:
 	void stackViewChanged(QObject *stackView);
 	void viewLoadingChanged(bool viewLoading);
@@ -85,6 +88,8 @@ signals:
 
 private slots:
 	void statusChanged(QQmlComponent::Status status);
+	void itemOpened(QVariant item);
+	void itemClosed(QVariant item);
 
 private:
 	QQmlEngine *_engine;

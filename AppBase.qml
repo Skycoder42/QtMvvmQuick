@@ -8,13 +8,18 @@ ApplicationWindow {
 	width: 360
 	height: 520
 
+	signal opened(var item);
+	signal closed(var item);
+
 	function presentItem(item) {
 		//present the item
+		//opened(item)
 		return false;
 	}
 
 	function presentPopup(popup) {
 		//present the popup
+		//opened(popup)
 		return false;
 	}
 
@@ -23,10 +28,14 @@ ApplicationWindow {
 	}
 
 	function withdrawItem(item) {
+		//close the item
+		//closed(item)
 		return false;
 	}
 
 	function withdrawPopup(popup) {
+		//close the popup
+		//closed(popup)
 		return false;
 	}
 
