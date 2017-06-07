@@ -56,7 +56,7 @@ void QmlCoreMessage::getInput(const QString &title, const QString &text, const Q
 	if(onResult.isCallable()) {
 		auto engine = _engine;
 		CoreMessage::getInput(title, text, inputType.toUtf8().constData(), [engine, onResult](QVariant result){
-			QJSValue(onResult).call({engine->toScriptValue(result)});//TODO proper type detection
+			QJSValue(onResult).call({engine->toScriptValue(result)});
 		}, defaultValue, editProperties, okText, cancelText);
 	} else
 		CoreMessage::getInput(title, text, inputType.toUtf8().constData(), {}, defaultValue, editProperties, okText, cancelText);
@@ -67,7 +67,7 @@ void QmlCoreMessage::getInput(const QString &title, const QString &text, int inp
 	if(onResult.isCallable()) {
 		auto engine = _engine;
 		CoreMessage::getInput(title, text, inputType, [engine, onResult](QVariant result){
-			QJSValue(onResult).call({engine->toScriptValue(result)});//TODO proper type detection
+			QJSValue(onResult).call({engine->toScriptValue(result)});
 		}, defaultValue, editProperties, okText, cancelText);
 	} else
 		CoreMessage::getInput(title, text, inputType, {}, defaultValue, editProperties, okText, cancelText);
