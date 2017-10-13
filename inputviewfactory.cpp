@@ -1,6 +1,10 @@
 #include "inputviewfactory.h"
 #include <QMetaType>
 
+InputViewFactory::InputViewFactory() :
+	_simpleViews()
+{}
+
 InputViewFactory::~InputViewFactory() {}
 
 int InputViewFactory::metaTypeId(const QByteArray &type, const QVariantMap &properties)
@@ -15,7 +19,9 @@ int InputViewFactory::metaTypeId(const QByteArray &type, const QVariantMap &prop
 
 QUrl InputViewFactory::getInput(const QByteArray &type, const QVariantMap &)
 {
-	if(type == "string" || type == "QString")
+	if(_simpleViews.contains(type))
+		return _simpleViews.value(type);
+	else if(type == "string" || type == "QString")
 		return QStringLiteral("qrc:/de/skycoder42/qtmvvm/quick/inputs/TextField.qml");
 	else if(type == "int")
 		return QStringLiteral("qrc:/de/skycoder42/qtmvvm/quick/inputs/SpinBox.qml");
@@ -25,4 +31,10 @@ QUrl InputViewFactory::getInput(const QByteArray &type, const QVariantMap &)
 		return QStringLiteral("qrc:/de/skycoder42/qtmvvm/quick/inputs/ListEdit.qml");
 	else
 		return QUrl();
+}
+
+bool InputViewFactory::addSimpleView(const QByteArray &type, const QUrl &qmlFileUrl)
+{
+	_simpleViews.insert(type, qmlFileUrl);
+	return true;
 }
