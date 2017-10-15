@@ -1,5 +1,6 @@
 #include "quickpresenter.h"
 #include "qmlcoremessage.h"
+#include "qtqmlmvvmbinding.h"
 
 #include <QDebug>
 #include <QDir>
@@ -428,5 +429,6 @@ static void registerQml()
 	qmlRegisterSingletonType<QuickPresenterQmlSingleton>("de.skycoder42.qtmvvm.quick", 1, 0, "QuickPresenter", createQuickPresenterQmlSingleton);
 	qmlRegisterUncreatableType<MessageResult>("de.skycoder42.qtmvvm.quick", 1, 0, "MessageResult", "This type can only be passed to QML from the presenter!");
 	qmlRegisterSingletonType<QmlCoreMessage>("de.skycoder42.qtmvvm.quick", 1, 0, "CoreMessage", createCoreMessageQmlSingleton);
+	qmlRegisterType<QtQmlMvvmBinding>("de.skycoder42.qtmvvm.quick", 1, 0, "QtMvvmBinding");
 	//qmlProtectModule("de.skycoder42.qtmvvm", 1);
 }
