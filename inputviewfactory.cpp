@@ -12,7 +12,7 @@ int InputViewFactory::metaTypeId(const QByteArray &type, const QVariantMap &prop
 	if(type == "string")
 		return QMetaType::QString;
 	else if(type == "list")
-		return metaTypeId(properties.value("_list_data", "string").toByteArray(), properties);
+		return metaTypeId(properties.value(QStringLiteral("_list_data"), QByteArray("string")).toByteArray(), properties);
 	else
 		return QMetaType::type(type);
 }

@@ -12,6 +12,12 @@ QtQmlMvvmBinding::QtQmlMvvmBinding(QObject *parent) :
 	_type(QtMvvmBinding::TwoWay)
 {}
 
+QtQmlMvvmBinding::~QtQmlMvvmBinding()
+{
+	if(_binding)
+		_binding->deleteLater();
+}
+
 void QtQmlMvvmBinding::classBegin() {}
 
 void QtQmlMvvmBinding::componentComplete()

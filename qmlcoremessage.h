@@ -32,10 +32,10 @@ public slots:
 				  const QString &text,
 				  QJSValue onResult = {},
 				  const QString &okText = {});
-	void about(const QString &content,
-			   bool includeCompany = true,
-			   const QUrl &companyUrl = QUrl(),
-			   bool includeQtVersion = true);
+	QT_DEPRECATED void about(const QString &content,
+							 bool includeCompany = true,
+							 const QUrl &companyUrl = QUrl(),
+							 bool includeQtVersion = true);
 	void getInput(const QString &title,
 				  const QString &text,
 				  const QString inputType,

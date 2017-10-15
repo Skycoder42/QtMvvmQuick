@@ -28,6 +28,7 @@ public:
 	Q_FLAG(BindingDirection)
 
 	explicit QtQmlMvvmBinding(QObject *parent = nullptr);
+	~QtQmlMvvmBinding();
 
 	void classBegin() override;
 	void componentComplete() override;
